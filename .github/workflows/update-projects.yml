@@ -1,0 +1,33 @@
+name: Update Projects
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Run every 15 minutes
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    env:
+      N_PROJECTS: ${{ vars.N_PROJECTS }}
+      VIDEO_URL: ${{ vars.VIDEO_URL }}
+      POSTGRES_CONN_URL: ${{ secrets.POSTGRES_CONN_URL }}
+      PROJECTS_TIMESTAMPS: ${{ vars.PROJECTS_TIMESTAMPS }}
+      PROJECTS_TRACKS: ${{ vars.PROJECTS_TRACKS }}
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
+      - name: Run update script
+        run: python update.py 
