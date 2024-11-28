@@ -82,7 +82,12 @@ def get_project_data(project_id: int, video_url: str, timestamp_seconds: int, tr
 def upsert_project(conn: psycopg.Connection, project_data: Dict[str, Any]):
     """Upsert a project into the database"""
     with conn.cursor() as cur:
-        cur.execute("""
+        # Create a unique statement name using the project_id
+        stmt_name = f"upsert_project_{project_data['project_id']}"
+        
+        # Execute with a named prepared statement
+        cur.execute(f"""
+            /*{{stmt_name}} */
             INSERT INTO projects (
                 project_id, project_name, slug, oneliner, description,
                 logo_url, repo_url, app_url, demo_url, track, created_at
