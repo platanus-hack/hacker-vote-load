@@ -3,7 +3,7 @@ import json
 from typing import Dict, Any
 import psycopg
 from datetime import datetime, timezone
-from gen_csv import (
+from utils import (
     get_branches,
     get_file_content,
     parse_jsonc,
