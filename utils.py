@@ -8,12 +8,17 @@ GITHUB_API_BASE_URL = "https://api.github.com/repos/platanus-hack/team-{}/branch
 GITHUB_RAW_BASE_URL = "https://raw.githubusercontent.com/platanus-hack/team-{}/"
 GITHUB_REPO_BASE_URL = "https://github.com/platanus-hack/team-{}"
 
+
+def with_primary_branches_first(branch):
+    return (branch not in ['main', 'master'], branch)
+
 def get_branches(project_id):
     """Fetch branch names for a repository"""
     url = GITHUB_API_BASE_URL.format(project_id)
     response = requests.get(url)
     response.raise_for_status()
-    return [branch['name'] for branch in response.json()]
+    branches = [branch['name'] for branch in response.json()]
+    return sorted(branches, key=with_primary_branches_first)
 
 def get_file_content(project_id, branch, file_path):
     """Fetch the content of a file from a specific branch"""
